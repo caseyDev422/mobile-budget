@@ -85,6 +85,11 @@ const Login = () => {
               accessibilityLabel: isPasswordVisible ? 'Hide password' : 'Show password'
             }}
           />
+          <Button
+            className={styles.signInButton}
+            title='Sign In'
+          />
+          <Text className={styles.createAccountText}>Don't have an account? Create one</Text>
         </View>
       </Container>
     </View>
@@ -103,6 +108,8 @@ const styles = {
   dividerText: 'mx-3 text-lg text-[#8c97a1]',
   inputContainer: 'mt-6',
   passwordInput: 'mt-4',
+  signInButton: 'mt-6 rounded-md',
+  createAccountText: 'mt-4 text-center text-[#8c97a1]',
   button: 'p-2',
   secondaryButton: 'mt-3',
   shadow: {
