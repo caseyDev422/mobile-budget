@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Text, View } from 'react-native';
+import { Link } from 'expo-router';
 import { Container } from '@/components/Container';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -89,7 +90,12 @@ const Login = () => {
             className={styles.signInButton}
             title='Sign In'
           />
-          <Text className={styles.createAccountText}>Don't have an account? Create one</Text>
+          <View className={styles.accountPromptRow}>
+            <Text className={styles.createAccountText}>Don't have an account? </Text>
+            <Link href='/sign-up'>
+              <Text className={styles.accountLinkText}>Create one</Text>
+            </Link>
+          </View>
         </View>
       </Container>
     </View>
@@ -109,7 +115,9 @@ const styles = {
   inputContainer: 'mt-6',
   passwordInput: 'mt-4',
   signInButton: 'mt-6 rounded-md',
-  createAccountText: 'mt-4 text-center text-[#8c97a1]',
+  accountPromptRow: 'mt-4 flex-row justify-center',
+  createAccountText: 'text-[#8c97a1]',
+  accountLinkText: 'text-[#2e78b7]',
   button: 'p-2',
   secondaryButton: 'mt-3',
   shadow: {
