@@ -1,11 +1,11 @@
 import { Text, View } from 'react-native';
 
-const Goals = () => {
+const Transactions = () => {
   return (
     <View className='flex-1 items-center justify-center px-6'>
-      <Text>Goals</Text>
+      <Text>Transactions</Text>
     </View>
   );
 };
 
-export default Goals;
+export default Transactions;

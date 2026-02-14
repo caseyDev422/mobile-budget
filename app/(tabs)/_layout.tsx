@@ -26,6 +26,76 @@ export default function Layout() {
           />
         }}
       />
+      <Tabs.Screen
+        name="what-if"
+        options={{
+          title: 'What-If',
+          tabBarIcon: ({ color }) => (
+            <EasyIcon
+              type="antdesign"
+              name="questioncircleo"
+              size={20}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="transactions"
+        options={{
+          title: 'Transactions',
+          tabBarIcon: ({ color }) => (
+            <EasyIcon
+              type="material-community"
+              name="cash-sync"
+              size={20}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="categories"
+        options={{
+          title: 'Categories',
+          tabBarIcon: ({ color }) => (
+            <EasyIcon
+              type="material-community"
+              name="shape-outline"
+              size={20}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="income"
+        options={{
+          title: 'Income',
+          tabBarIcon: ({ color }) => (
+            <EasyIcon
+              type="ionicon"
+              name="wallet-outline"
+              size={20}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="goals"
+        options={{
+          title: 'Goals',
+          tabBarIcon: ({ color }) => (
+            <EasyIcon
+              type="font-awesome5"
+              name="bullseye"
+              size={20}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   )
 }
