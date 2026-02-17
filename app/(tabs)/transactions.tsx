@@ -1,6 +1,7 @@
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import EasyIcon from 'react-native-easy-icon';
 import { Card } from '@/components/Card';
+import { Button } from '@/components/Button';
 
 type Transaction = {
   id: string;
@@ -57,7 +58,20 @@ const Transactions = () => {
   return (
     <ScrollView className='flex-1 bg-[#f5f7fb]'>
       <View className='px-6 pt-6 pb-8'>
-        <View className='flex-row gap-3'>
+        <Button
+          className='w-full rounded-md px-4 py-2'
+          title='Add Transaction'
+          icon={
+            <EasyIcon
+              type='antdesign'
+              name='plus'
+              size={12}
+              color='#fff'
+            />
+          }
+        />
+
+        <View className='mt-4 flex-row gap-3'>
           <Card
             className='flex-1'
             title='Total Spent'
@@ -86,7 +100,7 @@ const Transactions = () => {
               <View className='flex-1 pr-3'>
                 <Text className='text-base font-semibold text-[#1f2933]'>{transaction.title}</Text>
                 <Text className='mt-1 text-sm text-[#6b7280]'>
-                  {transaction.category} • {formatDate(transaction.date)}
+                  {transaction.category} | {formatDate(transaction.date)}
                 </Text>
               </View>
 
