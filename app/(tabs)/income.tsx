@@ -2,6 +2,7 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import EasyIcon from 'react-native-easy-icon';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { useThemeColors } from '@/theme/colors';
 
 type IncomeEntry = {
   id: string;
@@ -53,10 +54,11 @@ const formatDate = (date: Date) => {
 };
 
 const Income = () => {
+  const colors = useThemeColors();
   const totalIncome = incomeData.reduce((sum, income) => sum + income.amount, 0);
 
   return (
-    <ScrollView className='flex-1 bg-[#f5f7fb]'>
+    <ScrollView className='flex-1 bg-app-light-bg dark:bg-app-dark-bg'>
       <View className='px-6 pt-6 pb-8'>
         <Button
           className='w-full rounded-md px-4 py-2'
@@ -66,7 +68,7 @@ const Income = () => {
               type='antdesign'
               name='plus'
               size={12}
-              color='#fff'
+              color={colors.onPrimary}
             />
           }
         />
@@ -77,7 +79,7 @@ const Income = () => {
             title='Total Income'
             titleSize='sm'
             content={
-              <Text className='text-2xl font-semibold text-[#1f2933]'>
+              <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>
                 {formatCurrency(totalIncome)}
               </Text>
             }
@@ -87,29 +89,39 @@ const Income = () => {
             title='Total Income Sources'
             titleSize='sm'
             content={
-              <Text className='text-2xl font-semibold text-[#1f2933]'>{incomeData.length}</Text>
+              <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>{incomeData.length}</Text>
             }
           />
         </View>
 
-        <Text className='mt-6 text-xl font-semibold text-[#1f2933]'>Income</Text>
+        <Text className='mt-6 text-xl font-semibold text-app-light-text dark:text-app-dark-text'>Income</Text>
 
         <View className='mt-3 gap-3'>
           {incomeData.map((income) => {
             const percentOfIncome = totalIncome === 0 ? 0 : (income.amount / totalIncome) * 100;
 
             return (
-              <View key={income.id} className='rounded-xl bg-white p-4'>
+              <View
+                key={income.id}
+                className='rounded-xl bg-white p-4 shadow-md dark:bg-app-dark-surface'
+                style={{
+                  shadowColor: colors.text,
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.18,
+                  shadowRadius: 8,
+                  elevation: 5
+                }}
+              >
                 <View className='flex-row items-start'>
                   <View className='flex-1 pr-3'>
-                    <Text className='text-base font-semibold text-[#1f2933]'>{income.title}</Text>
-                    <Text className='mt-1 text-sm text-[#6b7280]'>
+                    <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>{income.title}</Text>
+                    <Text className='mt-1 text-sm text-app-light-muted dark:text-app-dark-muted'>
                       {income.source} | {formatDate(income.date)}
                     </Text>
                   </View>
 
                   <View className='items-end'>
-                    <Text className='text-base font-semibold text-[#1f2933]'>
+                    <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>
                       {formatCurrency(income.amount)}
                     </Text>
                     <View className='mt-2 flex-row items-center'>
@@ -118,26 +130,26 @@ const Income = () => {
                         accessibilityRole='button'
                         accessibilityLabel={`Edit ${income.title}`}
                       >
-                        <EasyIcon type='feather' name='edit-2' size={16} color='#4a5565' />
+                        <EasyIcon type='feather' name='edit-2' size={16} color={colors.text} />
                       </TouchableOpacity>
                       <TouchableOpacity
                         accessibilityRole='button'
                         accessibilityLabel={`Delete ${income.title}`}
                       >
-                        <EasyIcon type='feather' name='trash-2' size={16} color='#dc2626' />
+                        <EasyIcon type='feather' name='trash-2' size={16} color={colors.critical} />
                       </TouchableOpacity>
                     </View>
                   </View>
                 </View>
 
                 <View className='mt-3 flex-row items-center'>
-                  <View className='mr-3 h-2 flex-1 overflow-hidden rounded-full bg-[#e5e7eb]'>
+                  <View className='mr-3 h-2 flex-1 overflow-hidden rounded-full bg-app-light-border dark:bg-app-dark-border'>
                     <View
-                      className='h-full rounded-full bg-[#16a34a]'
-                      style={{ width: `${percentOfIncome}%` }}
+                      className='h-full rounded-full'
+                      style={{ backgroundColor: colors.primary, width: `${percentOfIncome}%` }}
                     />
                   </View>
-                  <Text className='w-24 text-right text-xs text-[#4a5565]'>
+                  <Text className='w-24 text-right text-xs text-app-light-text dark:text-app-dark-text'>
                     {percentOfIncome.toFixed(1)}% of income
                   </Text>
                 </View>

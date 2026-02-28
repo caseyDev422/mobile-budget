@@ -2,6 +2,7 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import EasyIcon from 'react-native-easy-icon';
 import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
+import { useThemeColors } from '@/theme/colors';
 
 type Transaction = {
   id: string;
@@ -53,10 +54,11 @@ const formatDate = (date: Date) => {
 };
 
 const Transactions = () => {
+  const colors = useThemeColors();
   const totalSpent = transactionData.reduce((sum, transaction) => sum + transaction.amount, 0);
 
   return (
-    <ScrollView className='flex-1 bg-[#f5f7fb]'>
+    <ScrollView className='flex-1 bg-app-light-bg dark:bg-app-dark-bg'>
       <View className='px-6 pt-6 pb-8'>
         <Button
           className='w-full rounded-md px-4 py-2'
@@ -66,7 +68,7 @@ const Transactions = () => {
               type='antdesign'
               name='plus'
               size={12}
-              color='#fff'
+              color={colors.onPrimary}
             />
           }
         />
@@ -77,7 +79,7 @@ const Transactions = () => {
             title='Total Spent'
             titleSize='sm'
             content={
-              <Text className='text-2xl font-semibold text-[#1f2933]'>
+              <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>
                 {formatCurrency(totalSpent)}
               </Text>
             }
@@ -87,25 +89,35 @@ const Transactions = () => {
             title='Total Transactions'
             titleSize='sm'
             content={
-              <Text className='text-2xl font-semibold text-[#1f2933]'>{transactionData.length}</Text>
+              <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>{transactionData.length}</Text>
             }
           />
         </View>
 
-        <Text className='mt-6 text-xl font-semibold text-[#1f2933]'>Transactions</Text>
+        <Text className='mt-6 text-xl font-semibold text-app-light-text dark:text-app-dark-text'>Transactions</Text>
 
         <View className='mt-3 gap-3'>
           {transactionData.map((transaction) => (
-            <View key={transaction.id} className='flex-row items-center rounded-xl bg-white p-4'>
+            <View
+              key={transaction.id}
+              className='flex-row items-center rounded-xl bg-white p-4 shadow-md dark:bg-app-dark-surface'
+              style={{
+                shadowColor: colors.text,
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.18,
+                shadowRadius: 8,
+                elevation: 5
+              }}
+            >
               <View className='flex-1 pr-3'>
-                <Text className='text-base font-semibold text-[#1f2933]'>{transaction.title}</Text>
-                <Text className='mt-1 text-sm text-[#6b7280]'>
+                <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>{transaction.title}</Text>
+                <Text className='mt-1 text-sm text-app-light-muted dark:text-app-dark-muted'>
                   {transaction.category} | {formatDate(transaction.date)}
                 </Text>
               </View>
 
               <View className='items-end'>
-                <Text className='text-base font-semibold text-[#1f2933]'>
+                <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>
                   {formatCurrency(transaction.amount)}
                 </Text>
                 <View className='mt-2 flex-row items-center'>
@@ -114,13 +126,13 @@ const Transactions = () => {
                     accessibilityRole='button'
                     accessibilityLabel={`Edit ${transaction.title}`}
                   >
-                    <EasyIcon type='feather' name='edit-2' size={16} color='#4a5565' />
+                    <EasyIcon type='feather' name='edit-2' size={16} color={colors.text} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     accessibilityRole='button'
                     accessibilityLabel={`Delete ${transaction.title}`}
                   >
-                    <EasyIcon type='feather' name='trash-2' size={16} color='#dc2626' />
+                    <EasyIcon type='feather' name='trash-2' size={16} color={colors.critical} />
                   </TouchableOpacity>
                 </View>
               </View>

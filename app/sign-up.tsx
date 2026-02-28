@@ -4,10 +4,12 @@ import { Link } from 'expo-router';
 import { Container } from '@/components/Container';
 import { Input } from '@/components/Input';
 import EasyIcon from 'react-native-easy-icon';
+import { useThemeColors } from '@/theme/colors';
 
 const SignUp = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const colors = useThemeColors();
 
   return (
     <View className={styles.screen}>
@@ -21,7 +23,7 @@ const SignUp = () => {
                 type='feather'
                 name='user'
                 size={18}
-                color='#8c97a1'
+                color={colors.textMuted}
               />
             }
           />
@@ -36,7 +38,7 @@ const SignUp = () => {
                 type='material-community'
                 name='email-outline'
                 size={18}
-                color='#8c97a1'
+                color={colors.textMuted}
               />
             }
           />
@@ -49,7 +51,7 @@ const SignUp = () => {
                 type='feather'
                 name='lock'
                 size={18}
-                color='#8c97a1'
+                color={colors.textMuted}
               />
             }
             rightIcon={
@@ -57,7 +59,7 @@ const SignUp = () => {
                 type='feather'
                 name={isPasswordVisible ? 'eye-off' : 'eye'}
                 size={18}
-                color='#8c97a1'
+                color={colors.textMuted}
               />
             }
             rightIconPressableProps={{
@@ -75,7 +77,7 @@ const SignUp = () => {
                 type='feather'
                 name='lock'
                 size={18}
-                color='#8c97a1'
+                color={colors.textMuted}
               />
             }
             rightIcon={
@@ -83,7 +85,7 @@ const SignUp = () => {
                 type='feather'
                 name={isConfirmPasswordVisible ? 'eye-off' : 'eye'}
                 size={18}
-                color='#8c97a1'
+                color={colors.textMuted}
               />
             }
             rightIconPressableProps={{
@@ -109,12 +111,12 @@ export default SignUp;
 const styles = {
   screen: 'flex-1 p-12 justify-center',
   container: 'flex h-[75%] p-8',
-  headerText: 'text-lg text-[#abb3ba]',
+  headerText: 'text-lg text-app-light-muted dark:text-app-dark-muted',
   inputContainer: 'mt-6',
   emailInput: 'mt-4',
   passwordInput: 'mt-4',
   confirmPasswordInput: 'mt-4',
   accountPromptRow: 'mt-4 flex-row justify-center',
-  accountPromptText: 'text-[#8c97a1]',
-  accountLinkText: 'text-[#2e78b7]'
+  accountPromptText: 'text-app-light-muted dark:text-app-dark-muted',
+  accountLinkText: 'text-app-light-primary dark:text-app-dark-primary'
 };

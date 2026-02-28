@@ -2,6 +2,7 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import EasyIcon from 'react-native-easy-icon';
+import { useThemeColors } from '@/theme/colors';
 
 type Goal = {
   id: string;
@@ -70,12 +71,6 @@ const formatDate = (date: Date) => {
   return `${month}/${day}/${year}`;
 };
 
-const getProgressColor = (percent: number) => {
-  if (percent >= 85) return '#16a34a';
-  if (percent >= 60) return '#0891b2';
-  return '#f59e0b';
-};
-
 const getPercentComplete = (goal: Goal) => {
   if (goal.goalAmount === 0) return 0;
   return Math.min((goal.currentAmount / goal.goalAmount) * 100, 100);
@@ -84,8 +79,15 @@ const getPercentComplete = (goal: Goal) => {
 const getAmountLeft = (goal: Goal) => Math.max(goal.goalAmount - goal.currentAmount, 0);
 
 const GoalCard = ({ goal }: { goal: Goal }) => {
+  const colors = useThemeColors();
   const percentComplete = getPercentComplete(goal);
   const amountLeft = getAmountLeft(goal);
+
+  const getProgressColor = (percent: number) => {
+    if (percent >= 85) return colors.success;
+    if (percent >= 60) return colors.secondary;
+    return colors.warning;
+  };
 
   return (
     <Card
@@ -93,8 +95,8 @@ const GoalCard = ({ goal }: { goal: Goal }) => {
         <View>
           <View className='flex-row items-start justify-between gap-2'>
             <View className='flex-1 pr-3'>
-              <Text className='text-base font-semibold text-[#1f2933]'>{goal.title}</Text>
-              <Text className='mt-1 text-xs text-[#6b7280]'>Due {formatDate(goal.dueDate)}</Text>
+              <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>{goal.title}</Text>
+              <Text className='mt-1 text-xs text-app-light-muted dark:text-app-dark-muted'>Due {formatDate(goal.dueDate)}</Text>
             </View>
 
             <View className='mt-1 flex-row items-center'>
@@ -103,25 +105,25 @@ const GoalCard = ({ goal }: { goal: Goal }) => {
                 accessibilityRole='button'
                 accessibilityLabel={`Edit ${goal.title}`}
               >
-                <EasyIcon type='feather' name='edit-2' size={16} color='#4a5565' />
+                <EasyIcon type='feather' name='edit-2' size={16} color={colors.text} />
               </TouchableOpacity>
               <TouchableOpacity
                 accessibilityRole='button'
                 accessibilityLabel={`Delete ${goal.title}`}
               >
-                <EasyIcon type='feather' name='trash-2' size={16} color='#dc2626' />
+                <EasyIcon type='feather' name='trash-2' size={16} color={colors.critical} />
               </TouchableOpacity>
             </View>
           </View>
 
-          <Text className='mt-3 text-sm text-[#4a5565]'>Current Amount: {formatCurrency(goal.currentAmount)}</Text>
-          <Text className='mt-1 text-sm text-[#4a5565]'>Goal Amount: {formatCurrency(goal.goalAmount)}</Text>
+          <Text className='mt-3 text-sm text-app-light-text dark:text-app-dark-text'>Current Amount: {formatCurrency(goal.currentAmount)}</Text>
+          <Text className='mt-1 text-sm text-app-light-text dark:text-app-dark-text'>Goal Amount: {formatCurrency(goal.goalAmount)}</Text>
 
-          <Text className='mt-3 text-sm font-medium text-[#1f2933]'>
+          <Text className='mt-3 text-sm font-medium text-app-light-text dark:text-app-dark-text'>
             {formatCurrency(amountLeft)} left to reach goal
           </Text>
 
-          <View className='mt-2 h-2 w-full overflow-hidden rounded-full bg-[#e5e7eb]'>
+          <View className='mt-2 h-2 w-full overflow-hidden rounded-full bg-app-light-border dark:bg-app-dark-border'>
             <View
               className='h-full rounded-full'
               style={{
@@ -131,7 +133,7 @@ const GoalCard = ({ goal }: { goal: Goal }) => {
             />
           </View>
 
-          <Text className='mt-2 text-xs text-[#4a5565]'>{percentComplete.toFixed(0)}% complete</Text>
+          <Text className='mt-2 text-xs text-app-light-text dark:text-app-dark-text'>{percentComplete.toFixed(0)}% complete</Text>
         </View>
       }
     />
@@ -143,7 +145,7 @@ const Goals = () => {
   const totalDebtGoalsAmount = debtGoals.reduce((sum, goal) => sum + goal.goalAmount, 0);
 
   return (
-    <ScrollView className='flex-1 bg-[#f5f7fb]'>
+    <ScrollView className='flex-1 bg-app-light-bg dark:bg-app-dark-bg'>
       <View className='px-6 pt-6 pb-8'>
         <Button className='w-full rounded-md px-4 py-2' title='+ Add Goal' />
 
@@ -154,10 +156,10 @@ const Goals = () => {
             titleSize='sm'
             content={
               <View>
-                <Text className='text-2xl font-semibold text-[#1f2933]'>
+                <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>
                   {formatCurrency(totalSavingsGoalsAmount)}
                 </Text>
-                <Text className='mt-1 text-sm text-[#6b7280]'>{savingsGoals.length} goals</Text>
+                <Text className='mt-1 text-sm text-app-light-muted dark:text-app-dark-muted'>{savingsGoals.length} goals</Text>
               </View>
             }
           />
@@ -167,23 +169,23 @@ const Goals = () => {
             titleSize='sm'
             content={
               <View>
-                <Text className='text-2xl font-semibold text-[#1f2933]'>
+                <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>
                   {formatCurrency(totalDebtGoalsAmount)}
                 </Text>
-                <Text className='mt-1 text-sm text-[#6b7280]'>{debtGoals.length} goals</Text>
+                <Text className='mt-1 text-sm text-app-light-muted dark:text-app-dark-muted'>{debtGoals.length} goals</Text>
               </View>
             }
           />
         </View>
 
-        <Text className='mt-6 text-xl font-semibold text-[#1f2933]'>Savings Goals</Text>
+        <Text className='mt-6 text-xl font-semibold text-app-light-text dark:text-app-dark-text'>Savings Goals</Text>
         <View className='mt-3 gap-3'>
           {savingsGoals.map((goal) => (
             <GoalCard key={goal.id} goal={goal} />
           ))}
         </View>
 
-        <Text className='mt-6 text-xl font-semibold text-[#1f2933]'>Debt Goals</Text>
+        <Text className='mt-6 text-xl font-semibold text-app-light-text dark:text-app-dark-text'>Debt Goals</Text>
         <View className='mt-3 gap-3'>
           {debtGoals.map((goal) => (
             <GoalCard key={goal.id} goal={goal} />
