@@ -3,8 +3,10 @@ import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import EasyIcon from 'react-native-easy-icon';
 import { PieChart } from 'react-native-gifted-charts';
+import { useThemeColors } from '@/theme/colors';
 
 const Dashboard = () => {
+  const colors = useThemeColors();
   const totalIncome = 12450;
   const incomeSources = 5;
   const totalExpenses = 8360;
@@ -37,13 +39,13 @@ const Dashboard = () => {
     color: item.color
   }));
   const getProgressColor = (percent: number) => {
-    if (percent >= 90) return '#dc2626';
-    if (percent >= 75) return '#ea580c';
-    return '#16a34a';
+    if (percent >= 90) return colors.critical;
+    if (percent >= 75) return colors.warning;
+    return colors.success;
   };
 
   return (
-    <ScrollView className='flex-1'>
+    <ScrollView className='flex-1 bg-app-light-bg dark:bg-app-dark-bg'>
       <View className='px-6 pt-6 pb-8'>
         <View className='flex-row gap-3'>
           <Button
@@ -54,7 +56,7 @@ const Dashboard = () => {
                 type='antdesign'
                 name='plus'
                 size={14}
-                color='#fff'
+                color={colors.onPrimary}
               />
             }
           />
@@ -66,7 +68,7 @@ const Dashboard = () => {
                 type='antdesign'
                 name='plus'
                 size={14}
-                color='#fff'
+                color={colors.onPrimary}
               />
             }
           />
@@ -78,8 +80,8 @@ const Dashboard = () => {
             titleSize='sm'
             content={
               <View>
-                <Text className='text-2xl font-semibold text-[#1f2933]'>{formatCurrency(totalIncome)}</Text>
-                <Text className='mt-1 text-sm text-[#6b7280]'>{incomeSources} sources</Text>
+                <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>{formatCurrency(totalIncome)}</Text>
+                <Text className='mt-1 text-sm text-app-light-muted dark:text-app-dark-muted'>{incomeSources} sources</Text>
               </View>
             }
           />
@@ -89,8 +91,8 @@ const Dashboard = () => {
             titleSize='sm'
             content={
               <View>
-                <Text className='text-2xl font-semibold text-[#1f2933]'>{formatCurrency(totalExpenses)}</Text>
-                <Text className='mt-1 text-sm text-[#6b7280]'>{expenseTransactions} transactions</Text>
+                <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>{formatCurrency(totalExpenses)}</Text>
+                <Text className='mt-1 text-sm text-app-light-muted dark:text-app-dark-muted'>{expenseTransactions} transactions</Text>
               </View>
             }
           />
@@ -100,8 +102,8 @@ const Dashboard = () => {
             titleSize='sm'
             content={
               <View>
-                <Text className='text-2xl font-semibold text-[#1f2933]'>{formatCurrency(remainingIncome)}</Text>
-                <Text className='mt-1 text-sm text-[#16a34a]'>Under budget</Text>
+                <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>{formatCurrency(remainingIncome)}</Text>
+                <Text className='mt-1 text-sm text-app-light-primary dark:text-app-dark-primary'>Under budget</Text>
               </View>
             }
           />
@@ -111,14 +113,14 @@ const Dashboard = () => {
             titleSize='sm'
             content={
               <View>
-                <Text className='text-base font-semibold text-[#1f2933]'>
+                <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>
                   Savings: {formatCurrency(totalSavingsGoals)}
                 </Text>
-                <Text className='mt-1 text-base font-semibold text-[#1f2933]'>
+                <Text className='mt-1 text-base font-semibold text-app-light-text dark:text-app-dark-text'>
                   Debt: {formatCurrency(totalDebtGoals)}
                 </Text>
-                <Text className='mt-2 text-sm text-[#6b7280]'>{savingsGoalCount} savings goals</Text>
-                <Text className='text-sm text-[#6b7280]'>{debtGoalCount} debt goals</Text>
+                <Text className='mt-2 text-sm text-app-light-muted dark:text-app-dark-muted'>{savingsGoalCount} savings goals</Text>
+                <Text className='text-sm text-app-light-muted dark:text-app-dark-muted'>{debtGoalCount} debt goals</Text>
               </View>
             }
           />
@@ -140,7 +142,7 @@ const Dashboard = () => {
                 {spendingByCategory.map((item) => (
                   <View key={item.label} className='mb-2 w-1/2 flex-row items-center pr-2'>
                     <View className='mr-2 h-3 w-3 rounded-full' style={{ backgroundColor: item.color }} />
-                    <Text className='text-sm text-[#4a5565]'>
+                    <Text className='text-sm text-app-light-text dark:text-app-dark-text'>
                       {item.label}: {formatCurrency(item.value)}
                     </Text>
                   </View>
@@ -160,12 +162,12 @@ const Dashboard = () => {
 
                 return (
                   <View key={item.category} className='mb-4'>
-                    <Text className='text-base font-semibold text-[#1f2933]'>{item.category}</Text>
-                    <Text className='mt-1 text-sm text-[#4a5565]'>
+                    <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>{item.category}</Text>
+                    <Text className='mt-1 text-sm text-app-light-text dark:text-app-dark-text'>
                       {formatCurrency(item.spent)} / {formatCurrency(item.total)}
                     </Text>
                     <View className='mt-2 flex-row items-center'>
-                      <View className='mr-3 h-2 flex-1 overflow-hidden rounded-full bg-[#e5e7eb]'>
+                      <View className='mr-3 h-2 flex-1 overflow-hidden rounded-full bg-app-light-border dark:bg-app-dark-border'>
                         <View
                           className='h-full rounded-full'
                           style={{
@@ -174,7 +176,7 @@ const Dashboard = () => {
                           }}
                         />
                       </View>
-                      <Text className='w-12 text-right text-xs text-[#4a5565]'>{percent.toFixed(0)}%</Text>
+                      <Text className='w-12 text-right text-xs text-app-light-text dark:text-app-dark-text'>{percent.toFixed(0)}%</Text>
                     </View>
                   </View>
                 );

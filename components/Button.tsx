@@ -44,8 +44,8 @@ Button.displayName = 'Button';
 
 const styles = {
   button:
-    'flex-row items-center justify-center bg-indigo-500 rounded-[28px] shadow-md p-4',
-  buttonText: 'text-white text-lg font-semibold text-center',
+    'flex-row items-center justify-center rounded-[28px] bg-app-light-primary p-4 shadow-md dark:bg-app-dark-primary',
+  buttonText: 'text-center text-lg font-semibold text-app-light-bg dark:text-app-dark-text',
   iconLeft: 'mr-2',
   iconRight: 'ml-2',
 };

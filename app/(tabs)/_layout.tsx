@@ -1,18 +1,31 @@
 import { Tabs, useRouter } from "expo-router";
 import { Pressable, Text } from "react-native";
 import EasyIcon from 'react-native-easy-icon';
+import { useThemeColors } from '@/theme/colors';
+import { useColorScheme } from 'react-native';
 
 export default function Layout() {
   const router = useRouter();
+  const colors = useThemeColors();
+  const colorScheme = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
+        headerStyle: { backgroundColor: colorScheme === 'dark' ? colors.surface : 'white' },
+        headerTintColor: colors.text,
+        headerTitleStyle: { color: colors.text },
         headerRight: () => (
           <Pressable onPress={() => router.dismissAll()} hitSlop={8}>
-            <Text className='text-[#2e78b7] font-semibold pr-2'>Sign Out</Text>
+            <Text className='pr-2 font-semibold' style={{ color: colors.primary }}>Sign Out</Text>
           </Pressable>
         ),
+        tabBarStyle: {
+          backgroundColor: colorScheme === 'dark' ? colors.surface : 'white',
+          borderTopColor: colors.border
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted
       }}
     >
       <Tabs.Screen 

@@ -17,5 +17,5 @@ export const Container = ({ children, className, style }: ContainerProps) => {
 };
 
 const styles = {
-  container: 'flex bg-card bg-white rounded-2xl',
+  container: 'flex rounded-2xl bg-app-light-surface dark:bg-app-dark-surface',
 };

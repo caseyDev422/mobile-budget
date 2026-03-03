@@ -5,10 +5,12 @@ import { Container } from '@/components/Container';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 import EasyIcon from 'react-native-easy-icon';
+import { useThemeColors } from '@/theme/colors';
 
 const Login = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const router = useRouter();
+  const colors = useThemeColors();
 
   return (
     <View className={styles.screen}>
@@ -24,7 +26,7 @@ const Login = () => {
                 type="antdesign"
                 name="google"
                 size={20}
-                color="#fff"
+                color={colors.onPrimary}
               />
             }
           />
@@ -36,7 +38,7 @@ const Login = () => {
                 type="font-awesome5"
                 name="microsoft"
                 size={20}
-                color="#fff"
+                color={colors.onPrimary}
               />
             }
           />
@@ -57,7 +59,7 @@ const Login = () => {
                 type="material-community"
                 name="email-outline"
                 size={18}
-                color="#8c97a1"
+                color={colors.textMuted}
               />
             }
           />
@@ -70,7 +72,7 @@ const Login = () => {
                 type="feather"
                 name="lock"
                 size={18}
-                color="#8c97a1"
+                color={colors.textMuted}
               />
             }
             rightIcon={
@@ -78,7 +80,7 @@ const Login = () => {
                 type="feather"
                 name={isPasswordVisible ? 'eye-off' : 'eye'}
                 size={18}
-                color="#8c97a1"
+                color={colors.textMuted}
               />
             }
             rightIconPressableProps={{
@@ -109,27 +111,15 @@ export default Login;
 const styles = {
   screen: 'flex-1 p-12 justify-center',
   container: 'flex h-[75%] p-8',
-  signInText: 'text-lg text-[#abb3ba]',
+  signInText: 'text-lg text-app-light-muted dark:text-app-dark-muted',
   buttonContainer: 'mt-4',
   dividerContainer: 'mt-6 flex-row items-center',
-  dividerLine: 'h-[1px] flex-1 bg-[#d3d9df]',
-  dividerText: 'mx-3 text-lg text-[#8c97a1]',
+  dividerLine: 'h-[1px] flex-1 bg-app-light-border dark:bg-app-dark-border',
+  dividerText: 'mx-3 text-lg text-app-light-muted dark:text-app-dark-muted',
   inputContainer: 'mt-6',
   passwordInput: 'mt-4',
   signInButton: 'mt-6 rounded-md',
   accountPromptRow: 'mt-4 flex-row justify-center',
-  createAccountText: 'text-[#8c97a1]',
-  accountLinkText: 'text-[#2e78b7]',
-  button: 'p-2',
-  secondaryButton: 'mt-3',
-  shadow: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 6
-    },
-    shadowOpacity: 0.39,
-    shadowRadius: 8.30,
-    elevation: 13
-  }
+  createAccountText: 'text-app-light-muted dark:text-app-dark-muted',
+  accountLinkText: 'text-app-light-primary dark:text-app-dark-primary'
 };
