@@ -18,5 +18,5 @@ export const Label = ({ children, className, ...textProps }: LabelProps) => {
 };
 
 const styles = {
-  label: 'mb-2 text-sm font-medium text-[#4b5968]',
+  label: 'mb-2 text-sm font-medium text-app-light-text dark:text-app-dark-text',
 };

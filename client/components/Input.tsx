@@ -7,6 +7,7 @@ import {
   View
 } from 'react-native';
 import { Label } from '@/components/Label';
+import { useThemeColors } from '@/theme/colors';
 
 type IconPressableProps = Omit<TouchableOpacityProps, 'children' | 'className'>;
 
@@ -31,11 +32,12 @@ export const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps
       leftIconPressableProps,
       rightIconPressableProps,
       className,
-      placeholderTextColor = '#8c97a1',
+      placeholderTextColor,
       ...textInputProps
     },
     ref
   ) => {
+    const colors = useThemeColors();
     const leftPadding = leftIcon ? 'pl-12' : '';
     const rightPadding = rightIcon ? 'pr-12' : '';
 
@@ -69,7 +71,7 @@ export const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps
           <TextInput
             ref={ref}
             {...textInputProps}
-            placeholderTextColor={placeholderTextColor}
+            placeholderTextColor={placeholderTextColor ?? colors.textMuted}
             className={`${styles.input} ${leftPadding} ${rightPadding} ${className ?? ''}`.trim()}
           />
           {renderIcon(rightIcon, styles.rightIcon, rightIconPressableProps)}
@@ -85,7 +87,7 @@ const styles = {
   container: '',
   inputWrapper: 'relative',
   input:
-    'h-12 rounded-md border border-[#d3d9df] bg-white px-4 text-base text-[#1f2933]',
+    'h-12 rounded-md border border-app-light-border bg-app-light-bg px-4 text-base text-app-light-text dark:border-app-dark-border dark:bg-app-dark-surface-alt dark:text-app-dark-text',
   leftIcon:
     'absolute left-0 top-0 h-12 w-12 items-center justify-center',
   rightIcon:

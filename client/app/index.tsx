@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link, useRouter } from 'expo-router';
 import { ScrollView, Text, View } from 'react-native';
 import EasyIcon from 'react-native-easy-icon';
 import { Button } from '@/components/Button';
@@ -6,6 +7,7 @@ import { Container } from '@/components/Container';
 import { Input } from '@/components/Input';
 
 const Login = () => {
+  const router = useRouter();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
@@ -82,10 +84,14 @@ const Login = () => {
 
           <Text className={styles.forgotPassword}>Forgot password?</Text>
 
-          <Button className={styles.signInButton} title="Sign In" />
+          <Button
+            className={styles.signInButton}
+            title="Sign In"
+            onPress={() => router.push('/(tabs)')}
+          />
 
           <Text className={styles.createAccountText}>
-            Don&apos;t have an account? <Text className={styles.createAccountLink}>Create one</Text>
+            Don&apos;t have an account? <Link href="/sign-up"><Text className={styles.createAccountLink}>Create one</Text></Link>
           </Text>
         </View>
       </Container>

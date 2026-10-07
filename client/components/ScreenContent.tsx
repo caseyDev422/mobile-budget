@@ -20,7 +20,7 @@ export const ScreenContent = ({ title, path, children }: ScreenContentProps) => 
   );
 };
 const styles = {
-  container: `items-center flex-1 justify-center bg-white`,
-  separator: `h-[1px] my-7 w-4/5 bg-gray-200`,
-  title: `text-xl font-bold`,
+  container: `flex-1 items-center justify-center bg-app-light-bg dark:bg-app-dark-bg`,
+  separator: `my-7 h-[1px] w-4/5 bg-app-light-border dark:bg-app-dark-border`,
+  title: `text-xl font-bold text-app-light-text dark:text-app-dark-text`,
 };
