@@ -1,12 +1,80 @@
-import { ScrollView, View, Text } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, ScrollView, View, Text } from 'react-native';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import EasyIcon from 'react-native-easy-icon';
 import { PieChart } from 'react-native-gifted-charts';
 import { useThemeColors } from '@/theme/colors';
+import { connectBankAccount, loadBankData } from '@/lib/plaid';
+import { trpcQuery } from '@/lib/trpc';
+import type { BankData, ConnectionResult } from '@/types/plaid';
 
 const Dashboard = () => {
   const colors = useThemeColors();
+  const [bankData, setBankData] = useState<BankData | null>(null);
+  const [isBankBusy, setIsBankBusy] = useState(true);
+  const [bankMessage, setBankMessage] = useState<string | null>(null);
+  const [needsReconnect, setNeedsReconnect] = useState(false);
+  const bankRequest = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    bankRequest.current = controller;
+    void trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal)
+      .then(({ connection }) => { if (!controller.signal.aborted) setBankData(connection); })
+      .catch((error: unknown) => {
+        if (!controller.signal.aborted) setBankMessage(error instanceof Error ? error.message : 'Unable to load the bank connection.');
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          bankRequest.current = null;
+          setIsBankBusy(false);
+        }
+      });
+    return () => bankRequest.current?.abort();
+  }, []);
+
+  const handleConnectBank = async () => {
+    if (bankRequest.current) return;
+    const controller = new AbortController();
+    bankRequest.current = controller;
+    setIsBankBusy(true);
+    setBankMessage(null);
+    try {
+      const { connection } = await trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal);
+      setBankData(connection);
+      if (!connection || needsReconnect) {
+        if (!await connectBankAccount(needsReconnect && !!connection, controller.signal)) return;
+        if (controller.signal.aborted) return;
+        setNeedsReconnect(false);
+      }
+      setBankMessage('Syncing bank data...');
+      const data = await loadBankData(controller.signal);
+      if (controller.signal.aborted) return;
+      setBankData(data);
+      console.log('Bank balances:', data.accounts);
+      console.log('Bank transactions:', data.transactions);
+      setBankMessage(data.syncStatus === 'NOT_READY'
+        ? 'Your bank is still preparing transactions. Check again shortly.'
+        : `Bank data updated. ${data.transactions.length} transactions.`);
+    } catch (error) {
+      if (!controller.signal.aborted) {
+        const message = error instanceof Error ? error.message : 'Unable to connect your bank account.';
+        setNeedsReconnect(message.startsWith('ITEM_LOGIN_REQUIRED:'));
+        setBankMessage(message);
+        // An exchange may already have succeeded; restore the saved state before retrying.
+        try {
+          const { connection } = await trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal);
+          if (!controller.signal.aborted) setBankData(connection);
+        } catch { /* Preserve the original bank error. */ }
+      }
+    } finally {
+      if (!controller.signal.aborted) {
+        bankRequest.current = null;
+        setIsBankBusy(false);
+      }
+    }
+  };
   const totalIncome = 12450;
   const incomeSources = 5;
   const totalExpenses = 8360;
@@ -48,12 +116,32 @@ const Dashboard = () => {
     <ScrollView className='flex-1 bg-app-light-bg dark:bg-app-dark-bg'>
       <View className='px-6 pt-6 pb-8'>
         <Button
-          className='mb-4 w-full rounded-md px-4 py-2 opacity-50'
-          title='Connect Bank Account'
-          disabled
-          accessibilityState={{ disabled: true }}
-          icon={<EasyIcon type='material-community' name='bank-plus' size={18} color={colors.onPrimary} />}
+          className={`mb-4 w-full rounded-md px-4 py-2${isBankBusy ? ' opacity-50' : ''}`}
+          title={needsReconnect ? 'Reconnect Bank Account' : bankData ? 'Refresh Bank Data' : 'Connect Bank Account'}
+          onPress={handleConnectBank}
+          disabled={isBankBusy}
+          accessibilityState={{ disabled: isBankBusy, busy: isBankBusy }}
+          icon={isBankBusy
+            ? <ActivityIndicator size='small' color={colors.onPrimary} />
+            : <EasyIcon type='material-community' name={bankData ? 'sync' : 'bank-plus'} size={18} color={colors.onPrimary} />}
         />
+        {bankMessage ? (
+          <Text accessibilityLiveRegion='polite' className='mb-4 text-sm text-app-light-text dark:text-app-dark-text'>
+            {bankMessage}
+          </Text>
+        ) : null}
+        {bankData?.accounts.map((account) => (
+          <View key={account.id} className='mb-3 flex-row items-center justify-between gap-3'>
+            <Text className='flex-1 text-sm text-app-light-text dark:text-app-dark-text'>
+              {account.name}{account.mask ? ` | ${account.mask}` : ''}
+            </Text>
+            <Text className='text-sm font-semibold text-app-light-text dark:text-app-dark-text'>
+              {account.balance === null ? 'Unavailable' : account.balance.toLocaleString('en-US', {
+                style: 'currency', currency: account.currency ?? 'USD',
+              })}
+            </Text>
+          </View>
+        ))}
         <View className='flex-row gap-3'>
           <Button
             className='flex-1 h-11 rounded-md px-2 py-2'

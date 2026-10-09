@@ -1,8 +1,10 @@
 import { z } from "zod";
 
 import { publicProcedure, router } from "./trpc.js";
+import plaidRouter from "./routers/plaid/plaidRouter.js";
 
 export const appRouter = router({
+  plaid: plaidRouter,
   health: publicProcedure.query(() => {
     return {
       ok: true,

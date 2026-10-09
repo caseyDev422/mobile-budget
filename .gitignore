@@ -3,5 +3,6 @@ node_modules/
 /server/.env
 /client/.env
 /server/dist
+/server/.data/
 /client/android/
 /client/ios/

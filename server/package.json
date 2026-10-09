@@ -7,13 +7,16 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "setup:plaid": "node scripts/setupPlaidEnv.mjs",
+    "test": "tsx --test test/plaid.test.ts"
   },
   "dependencies": {
     "@trpc/server": "^11.0.0",
     "cors": "^2.8.5",
     "dotenv": "^18.0.6",
     "express": "^4.21.2",
+    "plaid": "^48.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
