@@ -7,6 +7,8 @@
     "ios": "pnpm --dir client ios",
     "web": "pnpm --dir client web",
     "lint": "pnpm --dir client lint",
-    "format": "pnpm --dir client format"
+    "format": "pnpm --dir client format",
+    "start:client": "cd client && pnpm start",
+    "start:server": "cd server && pnpm dev"
   }
 }

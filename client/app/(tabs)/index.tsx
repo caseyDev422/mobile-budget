@@ -47,6 +47,13 @@ const Dashboard = () => {
   return (
     <ScrollView className='flex-1 bg-app-light-bg dark:bg-app-dark-bg'>
       <View className='px-6 pt-6 pb-8'>
+        <Button
+          className='mb-4 w-full rounded-md px-4 py-2 opacity-50'
+          title='Connect Bank Account'
+          disabled
+          accessibilityState={{ disabled: true }}
+          icon={<EasyIcon type='material-community' name='bank-plus' size={18} color={colors.onPrimary} />}
+        />
         <View className='flex-row gap-3'>
           <Button
             className='flex-1 h-11 rounded-md px-2 py-2'

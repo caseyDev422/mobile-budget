@@ -1,2 +1,7 @@
 node_modules/
 .expo/
+/server/.env
+/client/.env
+/server/dist
+/client/android/
+/client/ios/
