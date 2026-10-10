@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { Configuration, PlaidApi, PlaidEnvironments } from "plaid";
-import type { PlaidEnvironment } from "../types/plaid.js";
+import type { PlaidEnvironment } from "../types/plaid";
 
 export function getEnvironment(): PlaidEnvironment {
   const environment = process.env.PLAID_ENV ?? "sandbox";

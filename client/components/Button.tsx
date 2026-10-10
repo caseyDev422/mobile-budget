@@ -1,10 +1,5 @@
 import React, { forwardRef } from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  View,
-} from 'react-native';
+import { Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 
 type ButtonProps = {
   title: string;
@@ -12,10 +7,7 @@ type ButtonProps = {
   iconSide?: 'left' | 'right';
 } & TouchableOpacityProps;
 
-export const Button = forwardRef<
-  React.ComponentRef<typeof TouchableOpacity>,
-  ButtonProps
->(
+export const Button = forwardRef<React.ComponentRef<typeof TouchableOpacity>, ButtonProps>(
   ({ title, icon, iconSide = 'left', className, ...touchableProps }, ref) => {
     const shouldShowLeftIcon = !!icon && iconSide === 'left';
     const shouldShowRightIcon = !!icon && iconSide === 'right';
@@ -24,17 +16,12 @@ export const Button = forwardRef<
       <TouchableOpacity
         ref={ref}
         {...touchableProps}
-        className={`${styles.button} ${className ?? ''}`}
-      >
-        {shouldShowLeftIcon && (
-          <View className={styles.iconLeft}>{icon}</View>
-        )}
+        className={`${styles.button} ${className ?? ''}`}>
+        {shouldShowLeftIcon && <View className={styles.iconLeft}>{icon}</View>}
 
         <Text className={styles.buttonText}>{title}</Text>
 
-        {shouldShowRightIcon && (
-          <View className={styles.iconRight}>{icon}</View>
-        )}
+        {shouldShowRightIcon && <View className={styles.iconRight}>{icon}</View>}
       </TouchableOpacity>
     );
   }

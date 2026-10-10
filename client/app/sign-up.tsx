@@ -17,46 +17,32 @@ const SignUp = () => {
         <Text className={styles.headerText}>Join Project Budget to get started</Text>
         <View className={styles.inputContainer}>
           <Input
-            label='Full Name'
-            leftIcon={
-              <EasyIcon
-                type='feather'
-                name='user'
-                size={18}
-                color={colors.textMuted}
-              />
-            }
+            label="Full Name"
+            leftIcon={<EasyIcon type="feather" name="user" size={18} color={colors.textMuted} />}
           />
           <Input
-            label='Email Address'
-            keyboardType='email-address'
-            autoCapitalize='none'
+            label="Email Address"
+            keyboardType="email-address"
+            autoCapitalize="none"
             autoCorrect={false}
             containerClassName={styles.emailInput}
             leftIcon={
               <EasyIcon
-                type='material-community'
-                name='email-outline'
+                type="material-community"
+                name="email-outline"
                 size={18}
                 color={colors.textMuted}
               />
             }
           />
           <Input
-            label='Password'
+            label="Password"
             secureTextEntry={!isPasswordVisible}
             containerClassName={styles.passwordInput}
-            leftIcon={
-              <EasyIcon
-                type='feather'
-                name='lock'
-                size={18}
-                color={colors.textMuted}
-              />
-            }
+            leftIcon={<EasyIcon type="feather" name="lock" size={18} color={colors.textMuted} />}
             rightIcon={
               <EasyIcon
-                type='feather'
+                type="feather"
                 name={isPasswordVisible ? 'eye-off' : 'eye'}
                 size={18}
                 color={colors.textMuted}
@@ -65,24 +51,17 @@ const SignUp = () => {
             rightIconPressableProps={{
               onPress: () => setIsPasswordVisible((prev) => !prev),
               accessibilityRole: 'button',
-              accessibilityLabel: isPasswordVisible ? 'Hide password' : 'Show password'
+              accessibilityLabel: isPasswordVisible ? 'Hide password' : 'Show password',
             }}
           />
           <Input
-            label='Confirm Password'
+            label="Confirm Password"
             secureTextEntry={!isConfirmPasswordVisible}
             containerClassName={styles.confirmPasswordInput}
-            leftIcon={
-              <EasyIcon
-                type='feather'
-                name='lock'
-                size={18}
-                color={colors.textMuted}
-              />
-            }
+            leftIcon={<EasyIcon type="feather" name="lock" size={18} color={colors.textMuted} />}
             rightIcon={
               <EasyIcon
-                type='feather'
+                type="feather"
                 name={isConfirmPasswordVisible ? 'eye-off' : 'eye'}
                 size={18}
                 color={colors.textMuted}
@@ -91,12 +70,12 @@ const SignUp = () => {
             rightIconPressableProps={{
               onPress: () => setIsConfirmPasswordVisible((prev) => !prev),
               accessibilityRole: 'button',
-              accessibilityLabel: isConfirmPasswordVisible ? 'Hide password' : 'Show password'
+              accessibilityLabel: isConfirmPasswordVisible ? 'Hide password' : 'Show password',
             }}
           />
           <View className={styles.accountPromptRow}>
             <Text className={styles.accountPromptText}>Already have an account? </Text>
-            <Link href='/'>
+            <Link href="/">
               <Text className={styles.accountLinkText}>Sign in</Text>
             </Link>
           </View>
@@ -118,5 +97,5 @@ const styles = {
   confirmPasswordInput: 'mt-4',
   accountPromptRow: 'mt-4 flex-row justify-center',
   accountPromptText: 'text-app-light-muted dark:text-app-dark-muted',
-  accountLinkText: 'text-app-light-primary dark:text-app-dark-primary'
+  accountLinkText: 'text-app-light-primary dark:text-app-dark-primary',
 };

@@ -8,7 +8,7 @@
     "web": "pnpm --dir client web",
     "lint": "pnpm --dir client lint",
     "format": "pnpm --dir client format",
-    "start:client": "cd client && pnpm start",
+    "start:client": "cd client && pnpm android",
     "start:server": "cd server && pnpm dev"
   }
 }

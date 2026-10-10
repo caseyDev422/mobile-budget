@@ -1,5 +1,5 @@
 import type { AccountBase, Transaction, TransactionsSyncResponse } from "plaid";
-import type { BankAccount, BankData, BankTransaction, StoredConnection } from "../types/plaid.js";
+import type { BankAccount, BankData, BankTransaction, StoredConnection } from "../types/plaid";
 
 export function toBankAccount(account: AccountBase): BankAccount {
   return {

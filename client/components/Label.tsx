@@ -8,10 +8,7 @@ type LabelProps = {
 
 export const Label = ({ children, className, ...textProps }: LabelProps) => {
   return (
-    <Text
-      {...textProps}
-      className={`${styles.label} ${className ?? ''}`.trim()}
-    >
+    <Text {...textProps} className={`${styles.label} ${className ?? ''}`.trim()}>
       {children}
     </Text>
   );

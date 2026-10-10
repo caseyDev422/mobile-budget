@@ -1,7 +1,7 @@
 import { timingSafeEqual } from "node:crypto";
 import { TRPCError } from "@trpc/server";
-import { publicProcedure } from "../../../trpc.js";
-import { requireSetting } from "./config.js";
+import { publicProcedure } from "../../../trpc";
+import { requireSetting } from "./config";
 
 // This shared token gates the local, single-user server, not a public deployment.
 export const bankProcedure = publicProcedure.use(({ ctx, next }) => {

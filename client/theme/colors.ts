@@ -9,7 +9,7 @@ const lightPalette = {
   warmGray: '#d9d9d9',
   darkGray: '#5e5e5e',
   mediumCoolGray: '#b0b0b0',
-  lightNeutralGray: '#f2f2f2'
+  lightNeutralGray: '#f2f2f2',
 } as const;
 
 const darkPalette = {
@@ -18,7 +18,7 @@ const darkPalette = {
   mutedGreen: '#2a4032',
   accentGreen: '#4cae4f',
   lightText: '#e0e0e0',
-  darkBackground: '#1e1e1e'
+  darkBackground: '#1e1e1e',
 } as const;
 
 export const appColors = {
@@ -34,7 +34,7 @@ export const appColors = {
     success: lightPalette.fruitSalad,
     warning: lightPalette.deYork,
     critical: lightPalette.darkGray,
-    onPrimary: lightPalette.lightNeutralGray
+    onPrimary: lightPalette.lightNeutralGray,
   },
   dark: {
     background: darkPalette.darkBackground,
@@ -48,8 +48,8 @@ export const appColors = {
     success: darkPalette.accentGreen,
     warning: darkPalette.lightAccent,
     critical: darkPalette.lightText,
-    onPrimary: darkPalette.lightText
-  }
+    onPrimary: darkPalette.lightText,
+  },
 } as const;
 
 export type AppThemeColors = (typeof appColors)['light'] | (typeof appColors)['dark'];

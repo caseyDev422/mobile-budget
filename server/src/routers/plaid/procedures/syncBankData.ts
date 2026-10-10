@@ -1,15 +1,15 @@
 import { TRPCError } from "@trpc/server";
-import { bankProcedure } from "../lib/auth.js";
-import { getPlaidClient } from "../lib/config.js";
+import { bankProcedure } from "../lib/auth";
+import { getPlaidClient } from "../lib/config";
 import {
   mergeTransactions,
   publicBankData,
   toBankAccount,
   withConnectionLock,
-} from "../lib/connection.js";
-import { plaidErrorCode, throwBankError } from "../lib/errors.js";
-import { syncBankDataInput } from "../lib/schemas.js";
-import { readConnectionStore, writeConnectionStore } from "./connectionStore.js";
+} from "../lib/connection";
+import { plaidErrorCode, throwBankError } from "../lib/errors";
+import { syncBankDataInput } from "../lib/schemas";
+import { readConnectionStore, writeConnectionStore } from "./connectionStore";
 
 export default bankProcedure.input(syncBankDataInput).mutation(({ input }) =>
   withConnectionLock(async () => {

@@ -5,7 +5,7 @@ import type {
   connectionSchema,
   encryptedStoreSchema,
   storeSchema,
-} from "../lib/schemas.js";
+} from "../lib/schemas";
 
 export type BankAccount = z.infer<typeof bankAccountSchema>;
 export type BankTransaction = z.infer<typeof bankTransactionSchema>;

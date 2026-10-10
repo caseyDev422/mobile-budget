@@ -1,17 +1,14 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { randomBytes, randomUUID } from "node:crypto";
 import { TRPCError } from "@trpc/server";
-import { getEnvironment } from "../lib/config.js";
-import { decryptStore, encryptStore } from "../lib/encryption.js";
-import { encryptedStoreSchema, storeSchema } from "../lib/schemas.js";
-import type { ConnectionStore } from "../types/plaid.js";
+import { getEnvironment } from "../lib/config";
+import { decryptStore, encryptStore } from "../lib/encryption";
+import { encryptedStoreSchema, storeSchema } from "../lib/schemas";
+import type { ConnectionStore } from "../types/plaid";
 
 function storeDirectory() {
-  return (
-    process.env.PLAID_DATA_DIR ?? fileURLToPath(new URL("../../../../.data/", import.meta.url))
-  );
+  return process.env.PLAID_DATA_DIR ?? resolve(__dirname, "../../../../.data");
 }
 
 function storePath() {

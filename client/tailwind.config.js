@@ -21,8 +21,8 @@ module.exports = {
         'app-dark-text': '#e0e0e0',
         'app-dark-muted': '#b0b0b0',
         'app-dark-primary': '#4cae4f',
-        'app-dark-secondary': '#3d8f3d'
-      }
+        'app-dark-secondary': '#3d8f3d',
+      },
     },
   },
   plugins: [],

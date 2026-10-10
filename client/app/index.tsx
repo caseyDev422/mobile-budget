@@ -14,8 +14,7 @@ const Login = () => {
     <ScrollView
       className={styles.scrollView}
       contentContainerClassName={styles.content}
-      keyboardShouldPersistTaps="handled"
-    >
+      keyboardShouldPersistTaps="handled">
       <Container className={styles.container}>
         <View className={styles.logoContainer}>
           <View className={styles.logoBadge}>
@@ -78,7 +77,7 @@ const Login = () => {
             rightIconPressableProps={{
               onPress: () => setIsPasswordVisible((previous) => !previous),
               accessibilityRole: 'button',
-              accessibilityLabel: isPasswordVisible ? 'Hide password' : 'Show password'
+              accessibilityLabel: isPasswordVisible ? 'Hide password' : 'Show password',
             }}
           />
 
@@ -91,7 +90,10 @@ const Login = () => {
           />
 
           <Text className={styles.createAccountText}>
-            Don&apos;t have an account? <Link href="/sign-up"><Text className={styles.createAccountLink}>Create one</Text></Link>
+            Don&apos;t have an account?{' '}
+            <Link href="/sign-up">
+              <Text className={styles.createAccountLink}>Create one</Text>
+            </Link>
           </Text>
         </View>
       </Container>
@@ -121,5 +123,5 @@ const styles = {
   forgotPassword: 'mt-[-4px] self-end text-sm font-semibold text-[#3b6d5b]',
   signInButton: 'mt-2 rounded-xl bg-[#3b6d5b] py-3',
   createAccountText: 'mt-4 text-center text-sm text-[#6b7280]',
-  createAccountLink: 'font-semibold text-[#3b6d5b]'
+  createAccountLink: 'font-semibold text-[#3b6d5b]',
 };

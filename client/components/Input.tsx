@@ -4,7 +4,7 @@ import {
   type TextInputProps,
   TouchableOpacity,
   type TouchableOpacityProps,
-  View
+  View,
 } from 'react-native';
 import { Label } from '@/components/Label';
 import { useThemeColors } from '@/theme/colors';
@@ -53,8 +53,7 @@ export const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps
           <TouchableOpacity
             {...pressableProps}
             className={positionClassName}
-            activeOpacity={pressableProps.activeOpacity ?? 0.7}
-          >
+            activeOpacity={pressableProps.activeOpacity ?? 0.7}>
             {icon}
           </TouchableOpacity>
         );
@@ -88,8 +87,6 @@ const styles = {
   inputWrapper: 'relative',
   input:
     'h-12 rounded-md border border-app-light-border bg-app-light-bg px-4 text-base text-app-light-text dark:border-app-dark-border dark:bg-app-dark-surface-alt dark:text-app-dark-text',
-  leftIcon:
-    'absolute left-0 top-0 h-12 w-12 items-center justify-center',
-  rightIcon:
-    'absolute right-0 top-0 h-12 w-12 items-center justify-center',
+  leftIcon: 'absolute left-0 top-0 h-12 w-12 items-center justify-center',
+  rightIcon: 'absolute right-0 top-0 h-12 w-12 items-center justify-center',
 };

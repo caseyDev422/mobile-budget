@@ -14,7 +14,7 @@ type CardProps = {
 const titleSizeClass: Record<TitleSize, string> = {
   sm: 'text-sm',
   md: 'text-md',
-  lg: 'text-lg'
+  lg: 'text-lg',
 };
 
 export const Card = ({ content, title, titleSize = 'md', className }: CardProps) => {
@@ -28,13 +28,10 @@ export const Card = ({ content, title, titleSize = 'md', className }: CardProps)
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.18,
         shadowRadius: 8,
-        elevation: 5
-      }}
-    >
+        elevation: 5,
+      }}>
       {title ? (
-        <Text className={`${styles.title} ${titleSizeClass[titleSize]}`.trim()}>
-          {title}
-        </Text>
+        <Text className={`${styles.title} ${titleSizeClass[titleSize]}`.trim()}>{title}</Text>
       ) : null}
       {content}
     </View>
@@ -43,5 +40,5 @@ export const Card = ({ content, title, titleSize = 'md', className }: CardProps)
 
 const styles = {
   card: 'rounded-xl bg-white p-4 shadow-md dark:bg-app-dark-surface',
-  title: 'mb-2 font-semibold text-app-light-text dark:text-app-dark-text'
+  title: 'mb-2 font-semibold text-app-light-text dark:text-app-dark-text',
 };

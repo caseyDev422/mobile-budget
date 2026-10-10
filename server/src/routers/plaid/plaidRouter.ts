@@ -1,7 +1,14 @@
-import { router } from "../../trpc.js";
-import createLinkToken from "./procedures/createLinkToken.js";
-import exchangePublicToken from "./procedures/exchangePublicToken.js";
-import getConnection from "./procedures/getConnection.js";
-import syncBankData from "./procedures/syncBankData.js";
+import { router } from "../../trpc";
+import createLinkToken from "./procedures/createLinkToken";
+import exchangePublicToken from "./procedures/exchangePublicToken";
+import getConnection from "./procedures/getConnection";
+import syncBankData from "./procedures/syncBankData";
 
-export default router({ createLinkToken, exchangePublicToken, getConnection, syncBankData });
+const plaidRouter = router({
+  createLinkToken,
+  exchangePublicToken,
+  getConnection,
+  syncBankData,
+});
+
+export default plaidRouter;

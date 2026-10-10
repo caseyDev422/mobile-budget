@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import type { PlaidErrorResponse } from "../types/plaid.js";
+import type { PlaidErrorResponse } from "../types/plaid";
 
 export function plaidErrorCode(error: unknown) {
   return (error as PlaidErrorResponse | null)?.response?.data?.error_code;

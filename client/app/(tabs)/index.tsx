@@ -1,80 +1,100 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, View, Text } from 'react-native';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import EasyIcon from 'react-native-easy-icon';
 import { PieChart } from 'react-native-gifted-charts';
 import { useThemeColors } from '@/theme/colors';
-import { connectBankAccount, loadBankData } from '@/lib/plaid';
-import { trpcQuery } from '@/lib/trpc';
-import type { BankData, ConnectionResult } from '@/types/plaid';
+import { trpc } from '@/trpc';
+import type { BankData } from '@/types/plaid';
+import { connectBankAccount } from '@/lib/plaid';
 
 const Dashboard = () => {
   const colors = useThemeColors();
-  const [bankData, setBankData] = useState<BankData | null>(null);
-  const [isBankBusy, setIsBankBusy] = useState(true);
-  const [bankMessage, setBankMessage] = useState<string | null>(null);
-  const [needsReconnect, setNeedsReconnect] = useState(false);
-  const bankRequest = useRef<AbortController | null>(null);
+  const [bankData] = useState<BankData | null>(null);
+  const { data: connectionData, isLoading, isFetching, isSuccess, error } = trpc.plaid.getConnection.useQuery();
+  const { mutateAsync: createTokenMutation, isPending } = trpc.plaid.createLinkToken.useMutation({
+    onSuccess: (data) => {
+      handleConnectBank(data.linkToken);
+    },
+    onError: () => {
+      console.log('Error creating link token');
+    }
+  })
+  const loadingStatus = (isLoading || isFetching || isPending);
 
   useEffect(() => {
-    const controller = new AbortController();
-    bankRequest.current = controller;
-    void trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal)
-      .then(({ connection }) => { if (!controller.signal.aborted) setBankData(connection); })
-      .catch((error: unknown) => {
-        if (!controller.signal.aborted) setBankMessage(error instanceof Error ? error.message : 'Unable to load the bank connection.');
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          bankRequest.current = null;
-          setIsBankBusy(false);
-        }
-      });
-    return () => bankRequest.current?.abort();
-  }, []);
-
-  const handleConnectBank = async () => {
-    if (bankRequest.current) return;
-    const controller = new AbortController();
-    bankRequest.current = controller;
-    setIsBankBusy(true);
-    setBankMessage(null);
-    try {
-      const { connection } = await trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal);
-      setBankData(connection);
-      if (!connection || needsReconnect) {
-        if (!await connectBankAccount(needsReconnect && !!connection, controller.signal)) return;
-        if (controller.signal.aborted) return;
-        setNeedsReconnect(false);
-      }
-      setBankMessage('Syncing bank data...');
-      const data = await loadBankData(controller.signal);
-      if (controller.signal.aborted) return;
-      setBankData(data);
-      console.log('Bank balances:', data.accounts);
-      console.log('Bank transactions:', data.transactions);
-      setBankMessage(data.syncStatus === 'NOT_READY'
-        ? 'Your bank is still preparing transactions. Check again shortly.'
-        : `Bank data updated. ${data.transactions.length} transactions.`);
-    } catch (error) {
-      if (!controller.signal.aborted) {
-        const message = error instanceof Error ? error.message : 'Unable to connect your bank account.';
-        setNeedsReconnect(message.startsWith('ITEM_LOGIN_REQUIRED:'));
-        setBankMessage(message);
-        // An exchange may already have succeeded; restore the saved state before retrying.
-        try {
-          const { connection } = await trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal);
-          if (!controller.signal.aborted) setBankData(connection);
-        } catch { /* Preserve the original bank error. */ }
-      }
-    } finally {
-      if (!controller.signal.aborted) {
-        bankRequest.current = null;
-        setIsBankBusy(false);
-      }
+    if (error) {
+      console.error('Unable to load bank connection:', error.message);
+    } else if (isSuccess) {
+      console.log('connectionData', connectionData);
     }
+    // const controller = new AbortController();
+    // bankRequest.current = controller;
+    // void trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal)
+    //   .then(({ connection }) => { if (!controller.signal.aborted) setBankData(connection); })
+    //   .catch((error: unknown) => {
+    //     if (!controller.signal.aborted) setBankMessage(error instanceof Error ? error.message : 'Unable to load the bank connection.');
+    //   })
+    //   .finally(() => {
+    //     if (!controller.signal.aborted) {
+    //       bankRequest.current = null;
+    //       setIsBankBusy(false);
+    //     }
+    //   });
+    // return () => bankRequest.current?.abort();
+  }, [connectionData, error, isSuccess]);
+
+  const createBankLinkToken = async () => {
+    await createTokenMutation({ platform: 'android' });
   };
+
+  const handleConnectBank = async (token: string) => {
+    console.log('Link token create successfully', token);
+    await connectBankAccount(token);
+  }
+
+  // const handleConnectBank = async () => {
+  //   if (bankRequest.current) return;
+  //   const controller = new AbortController();
+  //   bankRequest.current = controller;
+  //   setIsBankBusy(true);
+  //   setBankMessage(null);
+  //   try {
+  //     const { connection } = await trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal);
+  //     setBankData(connection);
+  //     if (!connection || needsReconnect) {
+  //       if (!await connectBankAccount(needsReconnect && !!connection, controller.signal)) return;
+  //       if (controller.signal.aborted) return;
+  //       setNeedsReconnect(false);
+  //     }
+  //     setBankMessage('Syncing bank data...');
+  //     const data = await loadBankData(controller.signal);
+  //     if (controller.signal.aborted) return;
+  //     setBankData(data);
+  //     console.log('Bank balances:', data.accounts);
+  //     console.log('Bank transactions:', data.transactions);
+  //     setBankMessage(data.syncStatus === 'NOT_READY'
+  //       ? 'Your bank is still preparing transactions. Check again shortly.'
+  //       : `Bank data updated. ${data.transactions.length} transactions.`);
+  //   } catch (error) {
+  //     if (!controller.signal.aborted) {
+  //       const message = error instanceof Error ? error.message : 'Unable to connect your bank account.';
+  //       setNeedsReconnect(message.startsWith('ITEM_LOGIN_REQUIRED:'));
+  //       setBankMessage(message);
+  //       // An exchange may already have succeeded; restore the saved state before retrying.
+  //       try {
+  //         const { connection } = await trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal);
+  //         if (!controller.signal.aborted) setBankData(connection);
+  //       } catch { /* Preserve the original bank error. */ }
+  //     }
+  //   } finally {
+  //     if (!controller.signal.aborted) {
+  //       bankRequest.current = null;
+  //       setIsBankBusy(false);
+  //     }
+  //   }
+  // };
   const totalIncome = 12450;
   const incomeSources = 5;
   const totalExpenses = 8360;
@@ -90,7 +110,7 @@ const Dashboard = () => {
     { label: 'Utilities', value: 460, color: '#16a34a' },
     { label: 'Dining', value: 630, color: '#f97316' },
     { label: 'Entertainment', value: 380, color: '#db2777' },
-    { label: 'Shopping', value: 710, color: '#eab308' }
+    { label: 'Shopping', value: 710, color: '#eab308' },
   ];
   const budgetLimitsByCategory = [
     { category: 'Groceries', spent: 312.75, total: 450 },
@@ -98,13 +118,13 @@ const Dashboard = () => {
     { category: 'Utilities', spent: 201.45, total: 300 },
     { category: 'Dining', spent: 287.9, total: 320 },
     { category: 'Entertainment', spent: 128.35, total: 250 },
-    { category: 'Shopping', spent: 75.45, total: 400 }
+    { category: 'Shopping', spent: 75.45, total: 400 },
   ];
 
   const formatCurrency = (amount: number) => `$${amount.toLocaleString()}`;
   const pieData = spendingByCategory.map((item) => ({
     value: item.value,
-    color: item.color
+    color: item.color,
   }));
   const getProgressColor = (percent: number) => {
     if (percent >= 90) return colors.critical;
@@ -113,131 +133,144 @@ const Dashboard = () => {
   };
 
   return (
-    <ScrollView className='flex-1 bg-app-light-bg dark:bg-app-dark-bg'>
-      <View className='px-6 pt-6 pb-8'>
+    <ScrollView className="flex-1 bg-app-light-bg dark:bg-app-dark-bg">
+      <View className="px-6 pb-8 pt-6">
         <Button
-          className={`mb-4 w-full rounded-md px-4 py-2${isBankBusy ? ' opacity-50' : ''}`}
-          title={needsReconnect ? 'Reconnect Bank Account' : bankData ? 'Refresh Bank Data' : 'Connect Bank Account'}
-          onPress={handleConnectBank}
-          disabled={isBankBusy}
-          accessibilityState={{ disabled: isBankBusy, busy: isBankBusy }}
-          icon={isBankBusy
-            ? <ActivityIndicator size='small' color={colors.onPrimary} />
-            : <EasyIcon type='material-community' name={bankData ? 'sync' : 'bank-plus'} size={18} color={colors.onPrimary} />}
+          className={`mb-4 w-full rounded-md px-4 py-2${loadingStatus ? ' opacity-50' : ''}`}
+          title={bankData ? 'Refresh Bank Data' : 'Connect Bank Account'}
+          onPress={createBankLinkToken}
+          disabled={loadingStatus}
+          accessibilityState={{ disabled: loadingStatus, busy: loadingStatus }}
+          icon={
+            isLoading || isPending ? (
+              <ActivityIndicator size="small" color={colors.onPrimary} />
+            ) : (
+              <EasyIcon
+                type="material-community"
+                name={bankData ? 'sync' : 'bank-plus'}
+                size={18}
+                color={colors.onPrimary}
+              />
+            )
+          }
         />
-        {bankMessage ? (
-          <Text accessibilityLiveRegion='polite' className='mb-4 text-sm text-app-light-text dark:text-app-dark-text'>
-            {bankMessage}
-          </Text>
-        ) : null}
         {bankData?.accounts.map((account) => (
-          <View key={account.id} className='mb-3 flex-row items-center justify-between gap-3'>
-            <Text className='flex-1 text-sm text-app-light-text dark:text-app-dark-text'>
-              {account.name}{account.mask ? ` | ${account.mask}` : ''}
+          <View key={account.id} className="mb-3 flex-row items-center justify-between gap-3">
+            <Text className="flex-1 text-sm text-app-light-text dark:text-app-dark-text">
+              {account.name}
+              {account.mask ? ` | ${account.mask}` : ''}
             </Text>
-            <Text className='text-sm font-semibold text-app-light-text dark:text-app-dark-text'>
-              {account.balance === null ? 'Unavailable' : account.balance.toLocaleString('en-US', {
-                style: 'currency', currency: account.currency ?? 'USD',
-              })}
+            <Text className="text-sm font-semibold text-app-light-text dark:text-app-dark-text">
+              {account.balance === null
+                ? 'Unavailable'
+                : account.balance.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: account.currency ?? 'USD',
+                  })}
             </Text>
           </View>
         ))}
-        <View className='flex-row gap-3'>
+        <View className="flex-row gap-3">
           <Button
-            className='flex-1 h-11 rounded-md px-2 py-2'
-            title='Quick Transaction'
-            icon={
-              <EasyIcon
-                type='antdesign'
-                name='plus'
-                size={14}
-                color={colors.onPrimary}
-              />
-            }
+            className="h-11 flex-1 rounded-md px-2 py-2"
+            title="Quick Transaction"
+            icon={<EasyIcon type="antdesign" name="plus" size={14} color={colors.onPrimary} />}
           />
           <Button
-            className='flex-1 h-11 rounded-md px-2 py-2'
-            title='Quick Income'
-            icon={
-              <EasyIcon
-                type='antdesign'
-                name='plus'
-                size={14}
-                color={colors.onPrimary}
-              />
-            }
+            className="h-11 flex-1 rounded-md px-2 py-2"
+            title="Quick Income"
+            icon={<EasyIcon type="antdesign" name="plus" size={14} color={colors.onPrimary} />}
           />
         </View>
-        <View className='mt-6 flex-row flex-wrap gap-3 content-start'>
+        <View className="mt-6 flex-row flex-wrap content-start gap-3">
           <Card
-            className='basis-[48%] min-w-[145px]'
-            title='Total Income'
-            titleSize='sm'
+            className="min-w-[145px] basis-[48%]"
+            title="Total Income"
+            titleSize="sm"
             content={
               <View>
-                <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>{formatCurrency(totalIncome)}</Text>
-                <Text className='mt-1 text-sm text-app-light-muted dark:text-app-dark-muted'>{incomeSources} sources</Text>
+                <Text className="text-2xl font-semibold text-app-light-text dark:text-app-dark-text">
+                  {formatCurrency(totalIncome)}
+                </Text>
+                <Text className="mt-1 text-sm text-app-light-muted dark:text-app-dark-muted">
+                  {incomeSources} sources
+                </Text>
               </View>
             }
           />
           <Card
-            className='basis-[48%] min-w-[145px]'
-            title='Total Expenses'
-            titleSize='sm'
+            className="min-w-[145px] basis-[48%]"
+            title="Total Expenses"
+            titleSize="sm"
             content={
               <View>
-                <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>{formatCurrency(totalExpenses)}</Text>
-                <Text className='mt-1 text-sm text-app-light-muted dark:text-app-dark-muted'>{expenseTransactions} transactions</Text>
+                <Text className="text-2xl font-semibold text-app-light-text dark:text-app-dark-text">
+                  {formatCurrency(totalExpenses)}
+                </Text>
+                <Text className="mt-1 text-sm text-app-light-muted dark:text-app-dark-muted">
+                  {expenseTransactions} transactions
+                </Text>
               </View>
             }
           />
           <Card
-            className='basis-[48%] min-w-[145px]'
-            title='Remaining Income (Total Income - Total Expenses)'
-            titleSize='sm'
+            className="min-w-[145px] basis-[48%]"
+            title="Remaining Income (Total Income - Total Expenses)"
+            titleSize="sm"
             content={
               <View>
-                <Text className='text-2xl font-semibold text-app-light-text dark:text-app-dark-text'>{formatCurrency(remainingIncome)}</Text>
-                <Text className='mt-1 text-sm text-app-light-primary dark:text-app-dark-primary'>Under budget</Text>
+                <Text className="text-2xl font-semibold text-app-light-text dark:text-app-dark-text">
+                  {formatCurrency(remainingIncome)}
+                </Text>
+                <Text className="mt-1 text-sm text-app-light-primary dark:text-app-dark-primary">
+                  Under budget
+                </Text>
               </View>
             }
           />
           <Card
-            className='basis-[48%] min-w-[145px]'
-            title='Total Goals'
-            titleSize='sm'
+            className="min-w-[145px] basis-[48%]"
+            title="Total Goals"
+            titleSize="sm"
             content={
               <View>
-                <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>
+                <Text className="text-base font-semibold text-app-light-text dark:text-app-dark-text">
                   Savings: {formatCurrency(totalSavingsGoals)}
                 </Text>
-                <Text className='mt-1 text-base font-semibold text-app-light-text dark:text-app-dark-text'>
+                <Text className="mt-1 text-base font-semibold text-app-light-text dark:text-app-dark-text">
                   Debt: {formatCurrency(totalDebtGoals)}
                 </Text>
-                <Text className='mt-2 text-sm text-app-light-muted dark:text-app-dark-muted'>{savingsGoalCount} savings goals</Text>
-                <Text className='text-sm text-app-light-muted dark:text-app-dark-muted'>{debtGoalCount} debt goals</Text>
+                <Text className="mt-2 text-sm text-app-light-muted dark:text-app-dark-muted">
+                  {savingsGoalCount} savings goals
+                </Text>
+                <Text className="text-sm text-app-light-muted dark:text-app-dark-muted">
+                  {debtGoalCount} debt goals
+                </Text>
               </View>
             }
           />
         </View>
         <Card
-          className='mt-6'
-          title='Spending by Category'
-          titleSize='sm'
+          className="mt-6"
+          title="Spending by Category"
+          titleSize="sm"
           content={
-            <View className='items-center'>
+            <View className="items-center">
               <PieChart
                 data={pieData}
                 donut
                 radius={90}
                 innerRadius={55}
-                innerCircleColor='white'
+                innerCircleColor="white"
               />
-              <View className='mt-5 w-full flex-row flex-wrap'>
+              <View className="mt-5 w-full flex-row flex-wrap">
                 {spendingByCategory.map((item) => (
-                  <View key={item.label} className='mb-2 w-1/2 flex-row items-center pr-2'>
-                    <View className='mr-2 h-3 w-3 rounded-full' style={{ backgroundColor: item.color }} />
-                    <Text className='text-sm text-app-light-text dark:text-app-dark-text'>
+                  <View key={item.label} className="mb-2 w-1/2 flex-row items-center pr-2">
+                    <View
+                      className="mr-2 h-3 w-3 rounded-full"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <Text className="text-sm text-app-light-text dark:text-app-dark-text">
                       {item.label}: {formatCurrency(item.value)}
                     </Text>
                   </View>
@@ -247,31 +280,35 @@ const Dashboard = () => {
           }
         />
         <Card
-          className='mt-6'
-          title='Budget Limits By Category'
-          titleSize='sm'
+          className="mt-6"
+          title="Budget Limits By Category"
+          titleSize="sm"
           content={
             <View>
               {budgetLimitsByCategory.map((item) => {
                 const percent = Math.min((item.spent / item.total) * 100, 100);
 
                 return (
-                  <View key={item.category} className='mb-4'>
-                    <Text className='text-base font-semibold text-app-light-text dark:text-app-dark-text'>{item.category}</Text>
-                    <Text className='mt-1 text-sm text-app-light-text dark:text-app-dark-text'>
+                  <View key={item.category} className="mb-4">
+                    <Text className="text-base font-semibold text-app-light-text dark:text-app-dark-text">
+                      {item.category}
+                    </Text>
+                    <Text className="mt-1 text-sm text-app-light-text dark:text-app-dark-text">
                       {formatCurrency(item.spent)} / {formatCurrency(item.total)}
                     </Text>
-                    <View className='mt-2 flex-row items-center'>
-                      <View className='mr-3 h-2 flex-1 overflow-hidden rounded-full bg-app-light-border dark:bg-app-dark-border'>
+                    <View className="mt-2 flex-row items-center">
+                      <View className="mr-3 h-2 flex-1 overflow-hidden rounded-full bg-app-light-border dark:bg-app-dark-border">
                         <View
-                          className='h-full rounded-full'
+                          className="h-full rounded-full"
                           style={{
                             width: `${percent}%`,
-                            backgroundColor: getProgressColor(percent)
+                            backgroundColor: getProgressColor(percent),
                           }}
                         />
                       </View>
-                      <Text className='w-12 text-right text-xs text-app-light-text dark:text-app-dark-text'>{percent.toFixed(0)}%</Text>
+                      <Text className="w-12 text-right text-xs text-app-light-text dark:text-app-dark-text">
+                        {percent.toFixed(0)}%
+                      </Text>
                     </View>
                   </View>
                 );

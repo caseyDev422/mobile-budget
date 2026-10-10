@@ -1,8 +1,13 @@
-import { bankProcedure } from "../lib/auth.js";
-import { publicBankData } from "../lib/connection.js";
-import { readConnectionStore } from "./connectionStore.js";
+import { publicProcedure } from "../../../trpc";
 
-export default bankProcedure.query(async () => {
-  const { connection } = await readConnectionStore();
-  return { connection: connection ? publicBankData(connection) : null };
-});
+const getConnection = publicProcedure
+  .query(async () => {
+    
+    // TODO: connect to some db to check if connection already exists
+    return {
+      hasConnection: false,
+      connection: null,
+    }
+  });
+
+export default getConnection;

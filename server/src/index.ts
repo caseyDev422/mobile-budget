@@ -5,8 +5,8 @@ import express from "express";
 
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 
-import { createContext } from "./context.js";
-import { appRouter } from "./router.js";
+import { createContext } from "./context";
+import { appRouter } from "./router";
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);

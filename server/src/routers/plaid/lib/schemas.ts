@@ -44,7 +44,7 @@ export const encryptedStoreSchema = z.object({
 
 export const linkTokenInput = z.object({
   platform: z.enum(["android", "ios"]),
-  update: z.boolean().default(false),
+  accessToken: z.string().nullish(),
 });
 
 export const exchangeTokenInput = z.object({

@@ -1,10 +1,10 @@
 import { TRPCError } from "@trpc/server";
-import { bankProcedure } from "../lib/auth.js";
-import { getPlaidClient } from "../lib/config.js";
-import { withConnectionLock } from "../lib/connection.js";
-import { throwBankError } from "../lib/errors.js";
-import { exchangeTokenInput } from "../lib/schemas.js";
-import { readConnectionStore, writeConnectionStore } from "./connectionStore.js";
+import { bankProcedure } from "../lib/auth";
+import { getPlaidClient } from "../lib/config";
+import { withConnectionLock } from "../lib/connection";
+import { throwBankError } from "../lib/errors";
+import { exchangeTokenInput } from "../lib/schemas";
+import { readConnectionStore, writeConnectionStore } from "./connectionStore";
 
 export default bankProcedure.input(exchangeTokenInput).mutation(({ input }) =>
   withConnectionLock(async () => {

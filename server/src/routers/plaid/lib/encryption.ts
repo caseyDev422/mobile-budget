@@ -1,5 +1,5 @@
 import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
-import type { EncryptedStore } from "../types/plaid.js";
+import type { EncryptedStore } from "../types/plaid";
 
 export function encryptStore(plaintext: string, key: Buffer): EncryptedStore {
   const iv = randomBytes(12);
