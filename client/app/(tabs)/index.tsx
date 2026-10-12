@@ -29,20 +29,6 @@ const Dashboard = () => {
     } else if (isSuccess) {
       console.log('connectionData', connectionData);
     }
-    // const controller = new AbortController();
-    // bankRequest.current = controller;
-    // void trpcQuery<ConnectionResult>('plaid.getConnection', undefined, controller.signal)
-    //   .then(({ connection }) => { if (!controller.signal.aborted) setBankData(connection); })
-    //   .catch((error: unknown) => {
-    //     if (!controller.signal.aborted) setBankMessage(error instanceof Error ? error.message : 'Unable to load the bank connection.');
-    //   })
-    //   .finally(() => {
-    //     if (!controller.signal.aborted) {
-    //       bankRequest.current = null;
-    //       setIsBankBusy(false);
-    //     }
-    //   });
-    // return () => bankRequest.current?.abort();
   }, [connectionData, error, isSuccess]);
 
   const createBankLinkToken = async () => {

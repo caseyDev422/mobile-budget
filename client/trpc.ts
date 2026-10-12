@@ -8,6 +8,10 @@ export const client = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
       url: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000/trpc',
+      headers() {
+        const appToken = process.env.EXPO_PUBLIC_PLAID_APP_TOKEN;
+        return appToken ? { authorization: `Bearer ${appToken}` } : {};
+      },
     }),
   ],
 });

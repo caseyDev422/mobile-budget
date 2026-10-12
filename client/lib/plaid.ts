@@ -99,18 +99,18 @@ function delay(signal: AbortSignal) {
   });
 }
 
-export async function loadBankData(signal: AbortSignal) {
-  for (let attempt = 0; ; attempt++) {
-    const data = await trpc.plaid.syncBankData.mutate(
-      { refreshBalances: attempt === 0 },
-      { signal }
-    );
-    if (
-      data.transactions.length ||
-      data.syncStatus === 'HISTORICAL_UPDATE_COMPLETE' ||
-      attempt >= 5
-    )
-      return data;
-    await delay(signal);
-  }
-}
+// export async function loadBankData(signal: AbortSignal) {
+//   for (let attempt = 0; ; attempt++) {
+//     const data = await trpc.plaid.syncBankData.mutate(
+//       { refreshBalances: attempt === 0 },
+//       { signal }
+//     );
+//     if (
+//       data.transactions.length ||
+//       data.syncStatus === 'HISTORICAL_UPDATE_COMPLETE' ||
+//       attempt >= 5
+//     )
+//       return data;
+//     await delay(signal);
+//   }
+// }

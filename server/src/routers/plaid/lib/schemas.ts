@@ -54,3 +54,8 @@ export const exchangeTokenInput = z.object({
 export const syncBankDataInput = z
   .object({ refreshBalances: z.boolean().default(true) })
   .default({});
+
+export const getTransactionsInput = z.object({
+  accessToken: z.string().min(1).optional(),
+  cursor: z.string().nullish(),
+});
