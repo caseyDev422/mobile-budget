@@ -9,6 +9,7 @@
     "lint": "pnpm --dir client lint",
     "format": "pnpm --dir client format",
     "start:client": "cd client && pnpm android",
-    "start:server": "cd server && pnpm dev"
+    "start:server": "cd server && pnpm dev",
+    "start:postgres": "cd postgresql && docker compose up"
   }
 }
