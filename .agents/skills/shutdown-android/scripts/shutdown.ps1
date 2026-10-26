@@ -26,6 +26,40 @@ foreach ($target in $targets) {
 }
 Write-Output "Stopped $($targets.Count) matching mobile-budget Node server process(es)."
 
+$adb = Get-Command adb -ErrorAction SilentlyContinue
+if (-not $adb) {
+    Write-Warning 'adb is unavailable; the Android emulator was not stopped.'
+} else {
+    $deviceOutput = & $adb.Source devices
+    if ($LASTEXITCODE -ne 0) {
+        Write-Warning 'adb could not list devices; the Android emulator was not stopped.'
+    } else {
+        $emulatorSerials = @(
+            $deviceOutput | Select-Object -Skip 1 | ForEach-Object {
+                if ($_ -match '^(emulator-\S+)\s+device(?:\s|$)') { $Matches[1] }
+            }
+        )
+
+        $selectedEmulators = @()
+        if ($env:ANDROID_SERIAL -and $emulatorSerials -contains $env:ANDROID_SERIAL) {
+            $selectedEmulators = @($env:ANDROID_SERIAL)
+        } elseif ($emulatorSerials.Count -eq 1) {
+            $selectedEmulators = $emulatorSerials
+        } elseif ($emulatorSerials.Count -gt 1) {
+            Write-Warning 'Multiple Android emulators are running; set ANDROID_SERIAL to the emulator to stop. None were stopped.'
+        }
+
+        foreach ($serial in $selectedEmulators) {
+            & $adb.Source -s $serial emu kill
+            if ($LASTEXITCODE -eq 0) {
+                Write-Output "Stopped Android emulator $serial."
+            } else {
+                Write-Warning "Could not stop Android emulator $serial."
+            }
+        }
+    }
+}
+
 if (Test-Path -LiteralPath $composeFile) {
     $docker = Get-Command docker -ErrorAction SilentlyContinue
     if ($docker) {
