@@ -5,7 +5,7 @@ export interface UserAuthMethodTable {
   user_id: string;
   auth_method_type_id: number;
   username: string | null;
-  password_hash: string | null;
+  password: string | null;
   issuer: string | null;
   subject: string | null;
 }
